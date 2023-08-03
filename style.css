@@ -1,0 +1,27 @@
+body{
+    margin: 0%;
+    padding: 0%;
+    background: grey;
+}
+.container{
+    white-space: nowrap;
+    color: white;
+    font-family: 'Solaimanlipi', sans-serif; 
+    font-size: 25px;
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+#line{
+    border : none;
+    border-bottom: 1px solid white;
+    width: auto;
+}
+footer {
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    margin-top: 20px;
+    font-family: 'Solaimanlipi', sans-serif;}
