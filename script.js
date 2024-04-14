@@ -1,16 +1,30 @@
 let language = 'english';
-let isGregorianCountdown = true;
+let isGregorianCountdown = true; 
 let nextYearDate = null;
-let x = null; // Declare the interval variable globally
 
 function toBengaliNumeral(number) {
     const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
     return number.toString().replace(/\d/g, digit => bengaliNumerals[digit]);
 }
 
+function isTodayNewYear() {
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    
+    if (isGregorianCountdown) {
+        return today.getMonth() === 0 && today.getDate() === 1;
+    } else {
+        return today.getMonth() === 3 && today.getDate() === 14;
+    }
+}
+
 function updateTimer() {
     const now = new Date().getTime();
     const currentYear = new Date().getFullYear();
+
+    if (isTodayNewYear()) {
+        nextYearDate = null;
+    }
 
     if (nextYearDate === null || now >= nextYearDate) {
         if (isGregorianCountdown) {
@@ -26,64 +40,52 @@ function updateTimer() {
     const toggleButton = document.querySelector('button[onclick="toggleCountdown()"]');
     const titleElement = document.getElementById('title');
 
-    if (now >= nextYearDate) {
+    if (isTodayNewYear()) {
         timerElement.innerHTML = (language === 'english') ? "Happy New Year!" : "শুভ নববর্ষ!";
-        clearInterval(x); // Stop the countdown interval
-        return; // Exit the function early if it's already the new year
+    } else if (now >= nextYearDate) {
+        timerElement.innerHTML = (language === 'english') ? "Happy New Year!" : "শুভ নববর্ষ!";
+    } else {
+        let distance = nextYearDate - now;
+        var d = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var min = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var sec = Math.floor((distance % (1000 * 60)) / 1000);
+
+        if (language === 'bengali') {
+            d = toBengaliNumeral(d);
+            hrs = toBengaliNumeral(hrs);
+            min = toBengaliNumeral(min);
+            sec = toBengaliNumeral(sec);
+        }
+
+        if (language === 'bengali') {
+            timerElement.innerHTML = d + " দিন " + hrs + " ঘন্টা " + min + " মিনিট " + sec + " সেকেন্ড";
+        } else {
+            timerElement.innerHTML = d + " days " + hrs + " hours " + min + " minutes " + sec + " seconds";
+        }
     }
-
-    let distance = nextYearDate - now;
-    let d = Math.floor(distance / (1000 * 60 * 60 * 24));
-    let hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    let min = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    let sec = Math.floor((distance % (1000 * 60)) / 1000);
-
-    if (language === 'bengali') {
-        d = toBengaliNumeral(d);
-        hrs = toBengaliNumeral(hrs);
-        min = toBengaliNumeral(min);
-        sec = toBengaliNumeral(sec);
-    }
-
-    timerElement.innerHTML = (language === 'bengali') 
-        ? `${d} দিন ${hrs} ঘন্টা ${min} মিনিট ${sec} সেকেন্ড`
-        : `${d} days ${hrs} hours ${min} minutes ${sec} seconds`;
 
     if (isGregorianCountdown) {
-        toggleButton.innerHTML = (language === 'english') 
-            ? "Switch to Bengali New Year" 
-            : "বাংলা নববর্ষে পরিবর্তন করুন";
-        titleElement.innerHTML = (language === 'english') 
-            ? "JavaScript New Year Countdown" 
-            : "জাভাস্ক্রিপ্ট গ্রেগোরীয় নববর্ষ গণনা";
+        toggleButton.innerHTML = (language === 'english') ? "Switch to Bengali New Year" : "বাংলা নববর্ষে পরিবর্তন করুন";
+        titleElement.innerHTML = (language === 'english') ? "JavaScript New Year Countdown" : "জাভাস্ক্রিপ্ট গ্রেগোরীয় নববর্ষ গণনা";
     } else {
-        toggleButton.innerHTML = (language === 'english') 
-            ? "Switch to Gregorian New Year" 
-            : "গ্রেগোরীয় নববর্ষে পরিবর্তন করুন";
-        titleElement.innerHTML = (language === 'english') 
-            ? "JavaScript Bengali New Year Countdown" 
-            : "জাভাস্ক্রিপ্ট বাংলা নববর্ষ গণনা";
+        toggleButton.innerHTML = (language === 'english') ? "Switch to Gregorian New Year" : "গ্রেগোরীয় নববর্ষে পরিবর্তন করুন";
+        titleElement.innerHTML = (language === 'english') ? "JavaScript Bengali New Year Countdown" : "জাভাস্ক্রিপ্ট বাংলা নববর্ষ গণনা";
     }
 }
 
 function toggleCountdown() {
     isGregorianCountdown = !isGregorianCountdown;
-    nextYearDate = null;
-    clearInterval(x); // Clear the previous interval
+    nextYearDate = null; 
     updateTimer();
-    updatePageLanguage();
+    updatePageLanguage(); 
 }
 
 function setLanguage(lang) {
     language = lang;
     updatePageLanguage();
-    updateTimer();
-}
-
-function updatePageLanguage() {
-    const languageButton = document.getElementById('languageButton');
-    languageButton.innerHTML = (language === 'english') ? 'Switch to Bengali' : 'Switch to English';
+    updateTimer(); 
 }
 
 updateTimer();
-x = setInterval(updateTimer, 1000); // Start the interval and assign it to x
+var x = setInterval(updateTimer, 1000);
