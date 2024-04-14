@@ -1,6 +1,7 @@
 let language = 'english';
 let isGregorianCountdown = true;
 let nextYearDate = null;
+let x = null; // Declare the interval variable globally
 
 function toBengaliNumeral(number) {
     const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
@@ -27,6 +28,7 @@ function updateTimer() {
 
     if (now >= nextYearDate) {
         timerElement.innerHTML = (language === 'english') ? "Happy New Year!" : "শুভ নববর্ষ!";
+        clearInterval(x); // Stop the countdown interval
         return; // Exit the function early if it's already the new year
     }
 
@@ -67,6 +69,7 @@ function updateTimer() {
 function toggleCountdown() {
     isGregorianCountdown = !isGregorianCountdown;
     nextYearDate = null;
+    clearInterval(x); // Clear the previous interval
     updateTimer();
     updatePageLanguage();
 }
@@ -83,4 +86,4 @@ function updatePageLanguage() {
 }
 
 updateTimer();
-var x = setInterval(updateTimer, 1000);
+x = setInterval(updateTimer, 1000); // Start the interval and assign it to x
