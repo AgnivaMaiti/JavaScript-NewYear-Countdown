@@ -1,12 +1,3 @@
-let language = 'english';
-let isGregorianCountdown = true;
-let x = null; // Declare the interval variable globally
-
-function toBengaliNumeral(number) {
-    const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
-    return number.toString().replace(/\d/g, digit => bengaliNumerals[digit]);
-}
-
 function updateTimer() {
     const now = new Date();
     const currentYear = now.getFullYear();
@@ -29,26 +20,19 @@ function updateTimer() {
         timerElement.innerHTML = (language === 'english') ? "Happy New Year!" : "শুভ নববর্ষ!";
         clearInterval(x); // Stop the countdown interval
     } else {
-        let distance, d, hrs, min, sec;
+        let nextYearDate;
 
         if (isGregorianCountdown) {
-            let nextYearDate = new Date(currentYear, 0, 1).getTime();
-            if (now > nextYearDate) {
-                nextYearDate = new Date(currentYear + 1, 0, 1).getTime();
-            }
-            distance = nextYearDate - now.getTime();
+            nextYearDate = new Date(currentYear + 1, 0, 1).getTime();
         } else {
-            let nextYearDate = new Date(currentYear, 3, 14).getTime();
-            if (now > nextYearDate) {
-                nextYearDate = new Date(currentYear + 1, 3, 14).getTime();
-            }
-            distance = nextYearDate - now.getTime();
+            nextYearDate = new Date(currentYear + 1, 3, 14).getTime();
         }
 
-        d = Math.floor(distance / (1000 * 60 * 60 * 24));
-        hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        min = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        sec = Math.floor((distance % (1000 * 60)) / 1000);
+        let distance = nextYearDate - now.getTime();
+        let d = Math.floor(distance / (1000 * 60 * 60 * 24));
+        let hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        let min = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        let sec = Math.floor((distance % (1000 * 60)) / 1000);
 
         if (language === 'bengali') {
             d = toBengaliNumeral(d);
@@ -78,17 +62,3 @@ function updateTimer() {
             : "জাভাস্ক্রিপ্ট বাংলা নববর্ষ গণনা";
     }
 }
-
-function toggleCountdown() {
-    isGregorianCountdown = !isGregorianCountdown;
-    clearInterval(x); // Clear the previous interval
-    updateTimer();
-}
-
-function setLanguage(lang) {
-    language = lang;
-    updateTimer();
-}
-
-updateTimer();
-x = setInterval(updateTimer, 1000); // Start the interval and assign it to x
