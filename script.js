@@ -1,3 +1,12 @@
+let language = 'english';
+let isGregorianCountdown = true;
+let nextYearDate = null;
+
+function toBengaliNumeral(number) {
+    const bengaliNumerals = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return number.toString().replace(/\d/g, digit => bengaliNumerals[digit]);
+}
+
 function updateTimer() {
     const now = new Date().getTime();
     const currentYear = new Date().getFullYear();
@@ -54,3 +63,24 @@ function updateTimer() {
             : "জাভাস্ক্রিপ্ট বাংলা নববর্ষ গণনা";
     }
 }
+
+function toggleCountdown() {
+    isGregorianCountdown = !isGregorianCountdown;
+    nextYearDate = null;
+    updateTimer();
+    updatePageLanguage();
+}
+
+function setLanguage(lang) {
+    language = lang;
+    updatePageLanguage();
+    updateTimer();
+}
+
+function updatePageLanguage() {
+    const languageButton = document.getElementById('languageButton');
+    languageButton.innerHTML = (language === 'english') ? 'Switch to Bengali' : 'Switch to English';
+}
+
+updateTimer();
+var x = setInterval(updateTimer, 1000);
