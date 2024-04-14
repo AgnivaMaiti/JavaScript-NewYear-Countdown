@@ -1,50 +1,42 @@
 function updateTimer() {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1; // getMonth returns 0-indexed months
-    const currentDate = now.getDate();
+    const now = new Date().getTime();
+    const currentYear = new Date().getFullYear();
 
-    let isNewYear = false;
-
-    if (isGregorianCountdown && currentMonth === 1 && currentDate === 1) {
-        isNewYear = true;
-    } else if (!isGregorianCountdown && currentMonth === 4 && currentDate === 14) {
-        isNewYear = true;
+    if (nextYearDate === null || now >= nextYearDate) {
+        if (isGregorianCountdown) {
+            let nextYear = currentYear + 1;
+            nextYearDate = new Date("Jan 1 " + nextYear + " 00:00:00").getTime();
+        } else {
+            let nextYear = (currentYear + 1).toString();
+            nextYearDate = new Date("Apr 14 " + nextYear + " 00:00:00").getTime();
+        }
     }
 
     const timerElement = document.getElementById('timer');
     const toggleButton = document.querySelector('button[onclick="toggleCountdown()"]');
     const titleElement = document.getElementById('title');
 
-    if (isNewYear) {
+    if (now >= nextYearDate) {
         timerElement.innerHTML = (language === 'english') ? "Happy New Year!" : "শুভ নববর্ষ!";
-        clearInterval(x); // Stop the countdown interval
-    } else {
-        let nextYearDate;
-
-        if (isGregorianCountdown) {
-            nextYearDate = new Date(currentYear + 1, 0, 1).getTime();
-        } else {
-            nextYearDate = new Date(currentYear + 1, 3, 14).getTime();
-        }
-
-        let distance = nextYearDate - now.getTime();
-        let d = Math.floor(distance / (1000 * 60 * 60 * 24));
-        let hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        let min = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        let sec = Math.floor((distance % (1000 * 60)) / 1000);
-
-        if (language === 'bengali') {
-            d = toBengaliNumeral(d);
-            hrs = toBengaliNumeral(hrs);
-            min = toBengaliNumeral(min);
-            sec = toBengaliNumeral(sec);
-        }
-
-        timerElement.innerHTML = (language === 'bengali') 
-            ? `${d} দিন ${hrs} ঘন্টা ${min} মিনিট ${sec} সেকেন্ড`
-            : `${d} days ${hrs} hours ${min} minutes ${sec} seconds`;
+        return; // Exit the function early if it's already the new year
     }
+
+    let distance = nextYearDate - now;
+    let d = Math.floor(distance / (1000 * 60 * 60 * 24));
+    let hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let min = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    let sec = Math.floor((distance % (1000 * 60)) / 1000);
+
+    if (language === 'bengali') {
+        d = toBengaliNumeral(d);
+        hrs = toBengaliNumeral(hrs);
+        min = toBengaliNumeral(min);
+        sec = toBengaliNumeral(sec);
+    }
+
+    timerElement.innerHTML = (language === 'bengali') 
+        ? `${d} দিন ${hrs} ঘন্টা ${min} মিনিট ${sec} সেকেন্ড`
+        : `${d} days ${hrs} hours ${min} minutes ${sec} seconds`;
 
     if (isGregorianCountdown) {
         toggleButton.innerHTML = (language === 'english') 
